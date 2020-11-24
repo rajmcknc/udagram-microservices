@@ -18,15 +18,15 @@ script:
   - cd udagram-feed-api
   - docker build -t udagram-feed-api .
   - docker tag udagram-feed-api rajmcknc/udagram-feed-api:latest
-  - cd..
+  - cd ..
   - cd udagram-users-api
   - docker build -t udagram-users-api .
   - docker tag udagram-users-api rajmcknc/udagram-users-api:latest
-  - cd..
+  - cd ..
   - cd udagram-frontend
   - docker build -t udagram-frontend .
   - docker tag udagram-frontend rajmcknc/udagram-frontend:latest
-  - cd..
+  - cd ..
 
 # Tasks to perform after the process is successful. Formatting the Docker username and password as below enables you to programmatically log in without having the password exposed in logs.
 after_success:

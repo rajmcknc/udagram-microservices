@@ -18,7 +18,8 @@ import {V0_FEED_MODELS} from './controllers/v0/model.index';
 
   app.use(bodyParser.json());
 
-  app.use(cors({
+  app.use(cors());
+  /*app.use(cors({
     allowedHeaders: [
       'Origin', 'X-Requested-With',
       'Content-Type', 'Accept',
@@ -26,7 +27,7 @@ import {V0_FEED_MODELS} from './controllers/v0/model.index';
     ],
       methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
       origin: config.ui_url,
-  }));
+  }));*/
 
   app.use('/api/v0/', IndexRouter);
 

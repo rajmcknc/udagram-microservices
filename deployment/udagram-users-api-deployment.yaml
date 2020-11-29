@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udagram-users-api-app
+  labels:
+    app: udagram-users-api-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: udagram-users-api-app
+  template:
+    metadata:
+      labels:
+        app: udagram-users-api-app
+    spec:
+      containers:
+      - name: udagram-users-api
+        imagePullPolicy: Always
+        image: rajmcknc/udagram-users-api
+        ports:
+        - containerPort: 8080
+        env:
+            - name: POSTGRESS_HOST
+              value: udagramtumkurdev.cgyq5lchx3zb.us-east-1.rds.amazonaws.com
+            - name: POSTGRESS_DATABASE
+              value: udagramtumkurdev
+            - name: URL
+              value: http://localhost:8080
+            - name: UI_URL
+              value: http://localhost:8100
+            - name: AWS_MEDIA_BUCKET
+              value: udagramtumkurdev
+            - name: AWS_REGION
+              value: us-east-1
+            - name: AWS_PROFILE
+              value: default
+            - name: POSTGRESS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: udagramapisecrets
+                  key: POSTGRESS_USERNAME
+            - name: POSTGRESS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: udagramapisecrets
+                  key: POSTGRESS_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: udagramapisecrets
+                  key: JWT_SECRET
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: udagramapisecrets
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: udagramapisecrets
+                  key: AWS_SECRET_ACCESS_KEY    

@@ -3,8 +3,7 @@ import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
-const AUTH_API_HOST = environment.authApiHost;
-const FEED_API_HOST = environment.feedApiHost;
+const API_HOST = environment.apiHost;
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +28,7 @@ export class ApiService {
   }
 
     static getFullApi(endpoint: string) {
-        return endpoint.startsWith('/users') ? `${AUTH_API_HOST}${endpoint}` : `${FEED_API_HOST}${endpoint}`;
+        return `${API_HOST}${endpoint}`;
   }
 
 

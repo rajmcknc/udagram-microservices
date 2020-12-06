@@ -61,3 +61,4 @@ after_success:
 #  - docker push rajmcknc/udagram-users-api:latest
 #  - docker push rajmcknc/udagram-reverseproxy:latest
 #  - docker push rajmcknc/udagram-frontend:latest
+ - kubectl get pods

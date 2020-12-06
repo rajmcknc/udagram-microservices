@@ -11,9 +11,11 @@ services:
   - docker
 
 before_install:
-  - pip install --user awscli
-  - export PATH=$PATH:$HOME/.local/bin
-  - aws eks --region us-east-1 --aws_access_key_id $aws_access_key_id --aws_secret_access_key $aws_secret_access_key update-kubeconfig --name Demo
+  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  - chmod +x ./kubectl
+  - sudo mv ./kubectl /usr/local/bin/kubectl
+  - mkdir ${HOME}/.kube
+  - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config # include to travis console env variable :cat ${HOME}/.kube/config | base64 | pbcopy
 
 # Pre-testing installs
 install: skip
@@ -23,7 +25,6 @@ before_script: skip
   
 script:
   - docker --version 
-  - aws --version
   - kubectl version
  # - cd udagram-feed-api
  # - docker build -t udagram-feed-api .

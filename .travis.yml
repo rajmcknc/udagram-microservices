@@ -2,44 +2,51 @@ language: node_js
 node_js:
   - 13
 
-branches:
-  except:
-  - dev
+# Added this to trigger only when change is merged into main branch, where its stable
+#branches:
+#  except:
+#  - dev
 
 services:
   - docker
 
+before_install:
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+  - source ~/.bash_profile
+  - aws eks --region ap-southeast-2 update-kubeconfig --name Demo
+
 # Pre-testing installs
-install:
-  - echo "nothing needs to be installed"
+install: skip
 
 # Scripts to be run such as tests
-before_script:
-  - echo "no tests"
-
+before_script: skip
+  
 script:
-  - docker --version # print the version for logging
-  - cd udagram-feed-api
-  - docker build -t udagram-feed-api .
-  - docker tag udagram-feed-api rajmcknc/udagram-feed-api:latest
-  - cd ..
-  - cd udagram-users-api
-  - docker build -t udagram-users-api .
-  - docker tag udagram-users-api rajmcknc/udagram-users-api:latest
-  - cd ..
-  - cd udagram-reverseproxy
-  - docker build -t udagram-reverseproxy .
-  - docker tag udagram-reverseproxy rajmcknc/udagram-reverseproxy:latest
-  - cd ..
-  - cd udagram-frontend
-  - docker build -t udagram-frontend .
-  - docker tag udagram-frontend rajmcknc/udagram-frontend:latest
-  - cd ..
+  - docker --version 
+  - aws --version
+  - kubectl version
+ # - cd udagram-feed-api
+ # - docker build -t udagram-feed-api .
+#  - docker tag udagram-feed-api rajmcknc/udagram-feed-api:latest
+#  - cd ..
+#  - cd udagram-users-api
+#  - docker build -t udagram-users-api .
+#  - docker tag udagram-users-api rajmcknc/udagram-users-api:latest
+#  - cd ..
+#  - cd udagram-reverseproxy
+#  - docker build -t udagram-reverseproxy .
+#  - docker tag udagram-reverseproxy rajmcknc/udagram-reverseproxy:latest
+#  - cd ..
+#  - cd udagram-frontend
+#  - docker build -t udagram-frontend .
+#  - docker tag udagram-frontend rajmcknc/udagram-frontend:latest
+#  - cd ..
 
 # Tasks to perform after the process is successful. Formatting the Docker username and password as below enables you to programmatically log in without having the password exposed in logs.
 after_success:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push rajmcknc/udagram-feed-api:latest
-  - docker push rajmcknc/udagram-users-api:latest
-  - docker push rajmcknc/udagram-reverseproxy:latest
-  - docker push rajmcknc/udagram-frontend:latest
+ - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#  - docker push rajmcknc/udagram-feed-api:latest
+#  - docker push rajmcknc/udagram-users-api:latest
+#  - docker push rajmcknc/udagram-reverseproxy:latest
+#  - docker push rajmcknc/udagram-frontend:latest

@@ -16,6 +16,16 @@ before_install:
   - sudo mv ./kubectl /usr/local/bin/kubectl
   - mkdir ${HOME}/.kube
   - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config # include to travis console env variable :cat ${HOME}/.kube/config | base64 | pbcopy
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+  - mkdir ~/.aws
+  - touch ~/.aws/config
+  - chmod 600 ~/.aws/config
+  - echo "[default]" > ~/.aws/config
+  - echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/config
+  - echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/config
+  - cp ~/.aws/config ~/.aws/credentials
+  - aws eks --region ap-southeast-2 update-kubeconfig --name Demo
 
 # Pre-testing installs
 install: skip

@@ -61,4 +61,6 @@ after_success:
 #  - docker push rajmcknc/udagram-users-api:latest
 #  - docker push rajmcknc/udagram-reverseproxy:latest
 #  - docker push rajmcknc/udagram-frontend:latest
- - kubectl get pods
+ - cd deployment
+ - kubectl apply -f .
+ - kubectl set image deployment/udagram--feed-api-deployment udagram-feed-api-app=rajmcknc/udagram-feed-api:latest

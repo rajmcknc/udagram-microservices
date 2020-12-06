@@ -25,7 +25,7 @@ before_install:
   - echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/config
   - echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/config
   - cp ~/.aws/config ~/.aws/credentials
-  - aws eks --region ap-southeast-2 update-kubeconfig --name Demo
+  - aws eks --region us-east-1 update-kubeconfig --name Demo
 
 # Pre-testing installs
 install: skip

@@ -13,6 +13,7 @@ services:
 before_install:
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
+  - aws configure
   - aws eks --region us-east-1 update-kubeconfig --name Demo
 
 # Pre-testing installs

@@ -3,21 +3,26 @@ node_js:
   - 13
 
 # Added this to trigger only when change is merged into main branch, where its stable
-#branches:
-#  except:
-#  - dev
+branches:
+  except:
+  - dev
 
 services:
   - docker
 
 before_install:
+    #Set Kubectl on travis
   - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
   - chmod +x ./kubectl
   - sudo mv ./kubectl /usr/local/bin/kubectl
+  # Configure Kubectl with travis environment parameter KUBE_CONFIG. The KUBE_CONFIG is set with base 64 encoded .kube/config(Run this on your local copy to encode cat ${HOME}/.kube/config | base64 | pbcopy)
+  # On Windows - Installed Microsoft Base 64 Encoder to encode the file.  
   - mkdir ${HOME}/.kube
   - echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config 
+  # Set awscli on travis
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
+  # Configure aws config and credentials, by setting the aws_access_key_id and aws_secret_access_key from travis environment variable
   - mkdir ~/.aws
   - touch ~/.aws/config
   - chmod 600 ~/.aws/config
@@ -34,18 +39,22 @@ install: skip
 before_script: skip
   
 script:
+    # Build and tag udagram-feed-api docker image
   - cd udagram-feed-api
   - docker build -t udagram-feed-api .
   - docker tag udagram-feed-api rajmcknc/udagram-feed-api:latest
   - cd ..
+    # Build and tag udagram-users-api docker image
   - cd udagram-users-api
   - docker build -t udagram-users-api .
   - docker tag udagram-users-api rajmcknc/udagram-users-api:latest
   - cd ..
+    # Build and tag udagram-reverseproxy docker image
   - cd udagram-reverseproxy
   - docker build -t udagram-reverseproxy .
   - docker tag udagram-reverseproxy rajmcknc/udagram-reverseproxy:latest
   - cd ..
+    # Build and tag udagram-frontend docker image
   - cd udagram-frontend
   - docker build -t udagram-frontend .
   - docker tag udagram-frontend rajmcknc/udagram-frontend:latest
@@ -54,10 +63,12 @@ script:
 # Tasks to perform after the process is successful. Formatting the Docker username and password as below enables you to programmatically log in without having the password exposed in logs.
 after_success:
  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    # push docker images to dockerhub
  - docker push rajmcknc/udagram-feed-api:latest
  - docker push rajmcknc/udagram-users-api:latest
  - docker push rajmcknc/udagram-reverseproxy:latest
  - docker push rajmcknc/udagram-frontend:latest
+    # Use deployment yaml to pull docker images from dockerhub to kubernetes cluster
  - cd deployment
  - kubectl apply -f .
  - kubectl set image deployment/udagram--feed-api-deployment udagram-feed-api-app=rajmcknc/udagram-feed-api:latest

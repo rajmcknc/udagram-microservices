@@ -34,7 +34,8 @@ install: skip
 before_script: skip
   
 script:
-  - docker --version 
+  - docker --version
+  - aws --version
   - kubectl version
  # - cd udagram-feed-api
  # - docker build -t udagram-feed-api .
